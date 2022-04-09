@@ -22,7 +22,7 @@ class Config:
 
 
 
-#func:仅仅提取代码段相关的节点，无依赖
+#
 def func(mm):
     ast = mm['ast']
     k = 0
@@ -39,7 +39,7 @@ def func_mix(mm):
     code = [x for word in code for x in word]
     return (sbt,code)
     
-def func_relate(mm, expand_order=1):    #讨论后的截断策略
+def func_relate(mm, expand_order=1):    
     ast = mm['ast']
     code = nltk.word_tokenize(mm['code'].strip())
     code = [split_word(x) for x in code]
@@ -47,17 +47,17 @@ def func_relate(mm, expand_order=1):    #讨论后的截断策略
     k = 0
     mask = [True for _ in ast]
     for i in range(len(ast)):
-        if ast[k]['num'] == ast[i]['num']: k = i  # 找到代码段所属于的节点的公共祖先节点
-        if ast[i]['num'] == 0: mask[i] = False  # 不属于上下文的代码段的节点mask掉
-    mask_deepcom = mask     #保存一个不加上下文的mask，及mask_deepcom，这里没有确认根节点
+        if ast[k]['num'] == ast[i]['num']: k = i  
+        if ast[i]['num'] == 0: mask[i] = False  
+    mask_deepcom = mask     
     for i in range(k):
         mask_deepcom[i] = False
     inline_num = 0
     root_deepcom = k
     for i in mask[root_deepcom:]:
         if i:
-            inline_num += 1  # 统计属于代码段的ast节点的数目
-    if inline_num >= 100:  # 如果代码段本身节点的数目大于100，不加上下文,直接遍历,root_deepcom就是没添加
+            inline_num += 1  
+    if inline_num >= 100:  
         relate = get_sbt(root_deepcom, ast, mask)
         for i in range(root_deepcom):
             mask[i] = False
@@ -102,42 +102,42 @@ def func_relate(mm, expand_order=1):    #讨论后的截断策略
         node = ast[i]
         num[i] = 1 if mask[i] else 0
         for child in node['children']:
-            num[i] += num[child]    # num列表是包含上下文和代码段的节点数目，ast的num属性是代码段包含的内容
+            num[i] += num[child]    
 
     root_relate = 0
     for i in range(len(ast)):
         if num[i] == num[0]:
-            root_relate = i     #root_relate是扩充后的ast的根节点
-    if num[root_relate] <= 100:     #如果扩充后节点小于100，就直接保存扩充后的结果,
+            root_relate = i     
+    if num[root_relate] <= 100:     
         relate = get_sbt(root_relate, ast, mask)
         for i in range(root_relate):
             mask[i] = False
         # return mask
         return (relate, code)
     else:
-        root_relate = root_deepcom  #找回扩充前的根节点作为扩充AST节点
-        while num[root_relate] <= 100:     #如果回到原来的根节点小于100节点了，往父节点更新一层，直到节点数大于100
+        root_relate = root_deepcom  
+        while num[root_relate] <= 100:     
             root_relate = ast[root_relate]['parent']
         exceed_node_num =  num[root_relate] - 100
         reserved_node = []  #应该保留的节点编号列表
-        for index,i in enumerate(mask_deepcom):     #这里的mask_deepcom已经是只保留了子树根节点后面的ast了
+        for index,i in enumerate(mask_deepcom):     
             if i:
                 reserved_node.append(index)
-        #保留总路径最短的节点
+        #
         for token in mm['ast']:
             if token['parent'] == -1:
                 token['depth'] = 0
             else:
-                token['depth'] = mm['ast'][token['parent']]['depth'] + 1  # 计算深度
-        distance_list = []  # 存储所有上下文节点到保留节点的距离总和的列表
+                token['depth'] = mm['ast'][token['parent']]['depth'] + 1  
+        distance_list = []  
         for index,i in enumerate(mask):
             if index < root_relate:
                 mask[index] = False
             else:
-                if i and (index not in reserved_node):  #如果对应的节点属于上下文且不在保留节点里，计算这个节点和保留节点的距离
-                    path_distance = []  #计算上下文节点到每个保留节点的长度
+                if i and (index not in reserved_node):  
+                    path_distance = []  
                     for j in reserved_node:
-                        start = mm['ast'][index]   #把路径的起点作为上下文的
+                        start = mm['ast'][index]   
                         end = mm['ast'][j]
                         path1,path2 =[],[]
                         path1.append(start)
@@ -151,11 +151,11 @@ def func_relate(mm, expand_order=1):    #讨论后的截断策略
                                 path2 = [end] + path2
                         path = path1 + path2[1:]
                         path_distance.append(len(path))
-                    total_distance = sum(path_distance)     #计算灭个上下文节点到保留节点的距离总和
+                    total_distance = sum(path_distance)     
                     distance_list.append(total_distance)
-                    mask[index] = total_distance    #把上下文节点变成距离
-        distance_list.sort(reverse=True)    #距离从大到小排列
-        threshold = distance_list[exceed_node_num + 1:]     #把前面距离大于阈值的节点距离切片掉，阈值就是数目
+                    mask[index] = total_distance    
+        distance_list.sort(reverse=True)    
+        threshold = distance_list[exceed_node_num + 1:]     
         for i in range(len(mask)):
             if (mask[i] != True) and (mask[i] != False) and (mask[i] in threshold):
                 mask[i] = True
