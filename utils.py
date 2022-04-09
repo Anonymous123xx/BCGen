@@ -95,15 +95,15 @@ def myrouge(refs,pred,beta=1e2,eps=1e-2):
             for j in range(len(pred)):
                 dp[i].append(0)
                 if i==0 or j==0:
-                    if ref[i]==pred[j]:     #对参考序列第i个token和预测序列的第j个序列是否一致，先选定ref中的一个token，然后遍历pred的j去一一比较
+                    if ref[i]==pred[j]:     
                         dp[i][j] = 1
                     if i>0: dp[i][j] = max([dp[i][j],dp[i-1][j]])
                     elif j>0: dp[i][j] = max([dp[i][j],dp[i][j-1]])
         for i in range(1,len(ref)):
             for j in range(1,len(pred)):
-                dp[i][j] = max([dp[i][j-1],dp[i-1][j]])     #如果没有命中就把上一位的值拿过来
+                dp[i][j] = max([dp[i][j-1],dp[i-1][j]])     
                 if pred[j]==ref[i]:
-                    dp[i][j] = max([dp[i][j],dp[i-1][j-1]+1])   #如果命中就在最长子序列加1
+                    dp[i][j] = max([dp[i][j],dp[i-1][j-1]+1])   
         lcs = max([eps,1.*dp[len(ref)-1][len(pred)-1]])
         rec = lcs / len(ref)        
         pre = lcs / len(pred)
