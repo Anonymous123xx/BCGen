@@ -181,7 +181,6 @@ def find_scope(ast,names):
                     else:
                         li = traverse(x['children'][0],ast)
                         for elem in li: mask[elem] = True
-    
     return mask
 
 def find_name_scope(ast,name):
