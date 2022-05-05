@@ -1,6 +1,6 @@
 # BCGen
 
-BCGen is a project to automatically generate comments for given code snippets with their contexts.
+BCGen is a project to automatically generate block comments for given code snippets with their contexts.
 The source code and dataset are opened.
 
 # Requirements
