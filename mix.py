@@ -7,7 +7,7 @@ import numpy as np
 class SBTEncoder(nn.Module):
     def __init__(self,config):
         super(SBTEncoder,self).__init__()
-        self.device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device("cpu")
+        self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
         self.config = config
         self.embedding_t = nn.Embedding(config.DICT_SIZE_2,config.MODEL_SIZE)
         self.embedding_v = nn.Embedding(config.DICT_SIZE_1,config.MODEL_SIZE)
@@ -42,7 +42,7 @@ class SBTEncoder(nn.Module):
 class NormalEncoder(nn.Module):
     def __init__(self,config):
         super(NormalEncoder,self).__init__()
-        self.device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device("cpu")
+        self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
         self.config = config
         self.embedding = nn.Embedding(config.DICT_SIZE_1,config.MODEL_SIZE)
         for i in range(config.NUM_LAYER):
@@ -95,7 +95,7 @@ class Attn(nn.Module):
 class Decoder(nn.Module):    
     def __init__(self,config):
         super(Decoder,self).__init__()
-        self.device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device("cpu")
+        self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
         self.config = config
         self.attn1 = Attn(config)
         self.attn2 = Attn(config)
@@ -200,7 +200,7 @@ class Decoder(nn.Module):
 class Model(nn.Module):
     def __init__(self,config,encoder1,encoder2):
         super(Model,self).__init__()
-        self.device = torch.device("cuda:2") if torch.cuda.is_available() else torch.device("cpu")
+        self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
         self.config = config
         self.encoder1 = encoder1
         self.encoder2 = encoder2
