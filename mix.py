@@ -37,7 +37,6 @@ class SBTEncoder(nn.Module):
         cx = c
         hx = h
         ys = [y[:i] for y,i in zip(torch.unbind(tensor,axis=1),lengths)]
-
         return ys, (hx, cx)
 
 class NormalEncoder(nn.Module):
@@ -67,7 +66,6 @@ class NormalEncoder(nn.Module):
         cx = c
         hx = h
         ys = [y[:i] for y,i in zip(torch.unbind(tensor,axis=1),lengths)]
-
         return ys, (hx, cx)
 
 class Attn(nn.Module):
