@@ -24,3 +24,6 @@ In every training epoch, if the model has the greater performance, this model wi
 # Dataset
 
 Our dataset is opened in [Google Drive](https://drive.google.com/file/d/1tMeaY1-f8O9M3rtUDo8hjIlUG6IBmgJt/view?usp=sharing)
+
+# Human Evaluation
+The human evaluation result is illustrated in `human evaluation.md`.
