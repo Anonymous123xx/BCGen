@@ -200,7 +200,7 @@ def get_batch_mix(path,f,config,in_w2i,out_w2i):
     in_w2i, in3_w2i = in_w2i
     in1_w2i, in2_w2i = in_w2i
     for tu in get_one(f,path):
-       in_, out = tu    #in_是((（type,value),code),nl)
+       in_, out = tu    #in_ is ((（type,value),code),nl)
        in_, in3 = in_
        in1,in2 = in_
        in1 = [in1_w2i[x] if x in in1_w2i else in1_w2i['<UNK>'] for x in in1]
